@@ -1,0 +1,64 @@
+
+<html>
+<head>
+</head>
+  <body>
+      <p>Cloud based IoT Remote LED Control Wep App</p>
+      <h1 id="OUT_TEXT"></h1>
+      //버튼을 눌렀을 때 onFunction() 함수 실행
+      <button class = "on-button" id= "onBtn" onclick="onFunction()">LED ON</button>
+      //버튼을 눌렀을 때 offFunction() 함수 실행
+      <button class = "off-button" id="offBtn" onclick="offFunction()">LED OFF</button>
+
+      <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
+
+     <script>
+     // Your web app's Firebase configuration
+     var firebaseConfig = {
+       apiKey: "AIzaSyDUVrnEnz0Nd8imNV9U-BiHVrO3dwSkw6c",
+       authDomain: "ydgdit04-test.firebaseapp.com",
+       databaseURL: "https://ydgdit04-test.firebaseio.com",
+       projectId: "ydgdit04-test",
+       storageBucket: "ydgdit04-test.appspot.com",
+       messagingSenderId: "543055218936",
+       appId: "1:543055218936:web:77fab187377a5a8bad130d",
+       measurementId: "G-R7E5XHTVWK"
+     };
+     // Initialize Firebase
+     firebase.initializeApp(firebaseConfig);
+     firebase.analytics();
+    </script>
+
+      <script>
+        // getting the text value from the database
+        var led_one = document.getElementById('ON_BUTTON');
+        var led_off = document.getElementById('OFF_BUTTON');
+        //파이어베이스에서 RED_LED_STATUS의 child값을 부럴온다.
+        var dbRef = firebase.database().ref().child('RED_LED_STATUS');
+
+        function onFunction() {
+            dbRef.set('ON')
+            document.body.background = "/img/win.jpg";
+        }
+
+        function offFunction() {
+            dbRef.set('OFF')
+        }
+
+        dbRef.on("value", function(snapshot) {
+          //데이터베이스에서의 값이 'ON'일 경우 Text의 값을 바꾸어준다.
+          if (snapshot.val() == 'ON') {
+            OUT_TEXT.innerText = 'LED is ON';
+          }//데이터베이스에서의 값이 'OFF'일 경우 Text의 값을 바꾸어준다.
+           else if (snapshot.val() == 'OFF'){
+            OUT_TEXT.innerText = 'LED is OFF';
+          }
+
+        }, function (error) {
+          console.log("Error: " + error.code);
+        });
+      </script>
+    </body>
+</html>

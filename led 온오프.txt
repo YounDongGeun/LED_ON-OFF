@@ -1,0 +1,43 @@
+#include <ESP8266WiFi.h>                                              
+#include <FirebaseArduino.h>      
+#define FIREBASE_HOST "ydgdit04-test.firebaseio.com"    
+#define FIREBASE_AUTH "TcjBjHzdG1kKsfQVWjtyBUym2d3pHXfH3KRzgLVO"
+#define WIFI_SSID "YDG"                                          
+#define WIFI_PASSWORD ""  
+ 
+String RED_fireStatus = "";
+ 
+int RED_LED = D4;      
+                                                             
+void setup(){
+ Serial.begin(9600);
+ delay(1000);    
+ pinMode(RED_LED, OUTPUT);  
+               
+ WiFi.begin(WIFI_SSID);                              
+ Serial.print("Connecting to ");
+ Serial.print(WIFI_SSID);
+ while (WiFi.status() != WL_CONNECTED){
+   Serial.print(".");
+   delay(500);
+ }
+ Serial.println();
+ Serial.print("Connected to ");
+ Serial.println(WIFI_SSID);
+ Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+ Firebase.setString("RED_LED_STATUS", "OFF");
+}
+void loop(){
+ RED_fireStatus = Firebase.getString("RED_LED_STATUS");    
+ if (RED_fireStatus == "ON")  {
+   Serial.println("RED LED Turned ON");                                                        
+   digitalWrite(RED_LED, HIGH);      
+ }
+ else if (RED_fireStatus == "OFF") {
+   Serial.println("RED LED Turned OFF");
+   digitalWrite(RED_LED, LOW);    
+ } else {
+   Serial.println("Command Error! Please send ON/OFF");
+ }
+ delay(1000);
+} 
